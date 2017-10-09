@@ -57,7 +57,7 @@ public class DiceGame {
 			System.out.println("");
 			player.setScore(player.getScore()+terning2værdi+terning1værdi);
 			
-			if (terning1.alike(terning2værdi)){
+			if (terning1værdi == terning2værdi){
 
 				//hvis man slår 2 seksere skal der checkes for suddendeath, og sejr skal udskrives. Hvis ikke suddendeath er sat, så skal markeringen sættes hos spilleren
 				if (terning1værdi == 6 && player.getSuddenDeath()) {
@@ -80,7 +80,7 @@ public class DiceGame {
 					System.out.println(player.getPlayername()+ ". Your points have been reset to 0 ");}
 			}
 		}
-		while(terning1.alike(terning2værdi));
+		while(terning1værdi == terning2værdi);
 		player.setSuddenDeath(false);
 	}
 

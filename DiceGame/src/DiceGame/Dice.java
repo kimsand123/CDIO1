@@ -21,10 +21,6 @@ public class Dice {
 	public int getValue() {
 		return this.value;
 	}
-	public boolean alike(int dice) {
-		if (dice != this.value) {return false;}
-		return true;
-	}
 	
 	public String toString() {
 		return "value = "+ value;
