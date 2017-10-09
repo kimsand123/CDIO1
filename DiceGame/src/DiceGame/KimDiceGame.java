@@ -10,46 +10,51 @@ import desktop_fields.Street;
 
 public class KimDiceGame {
 
-	private int terning1værdi;
-	private int terning2værdi;
-	private boolean spilvundet;
+	private int terning1værdi;  //Private variable to hold the value of dice1
+	private int terning2værdi; //Private variable to hold the value of dice2
+	private boolean spilvundet; //Gamewon variable for gamecontrol
 
-	private Dice terning1 = new Dice();
-	private Dice terning2 = new Dice();
+	private Dice terning1 = new Dice(); //Diceobject1
+	private Dice terning2 = new Dice(); //Diceobject1
 
-	private Player player1 = new Player ("Player 1");
-	private Player player2 = new Player ("Player 2");
-
-	public KimDiceGame () {
+	private Player player1 = new Player ("Player 1"); //Player 1 object
+	private Player player2 = new Player ("Player 2"); //Player 1 object
+	Scanner sc = new Scanner(System.in); // Scanner so you have to press enter to roll dice
+	
+	//Constructor
+	public KimDiceGame () {  
 		terning1værdi = 0;
 		terning2værdi = 0;
-		spilvundet = false;
+		spilvundet = false; //Set to false so the game isn't over before it's begun.
+		
 
 	}
-	
-	public static void main(String[] args) {
-		KimDiceGame spil = new KimDiceGame();
 
-		System.out.println("The name of the game is...... getting to 40 with a twist.");
+	//Main
+	public static void main(String[] args) {
+		KimDiceGame spil = new KimDiceGame(); 
+		
+		// Game manual
+		System.out.println("The name of the game is...... getting to 40, with a twist.");
 		System.out.println("This game is about being the first to reach 40 points and then roll a double.");
 		System.out.println("If you roll doubles, you will get an ekstra roll");
 		System.out.println("If you roll double 1's, your points will reset and the eyes of the dice will be added to your score");
 		System.out.println("You can win the game in 2 ways.");
 		System.out.println("By reaching 40 AND then roll doubles OR roll double 6's AND then roll double 6's again in your free roll");
-		System.out.println("If you ");
 
-		while (spil.spilvundet==false) {
-			spil.player1.setSuddenDeath(false);
+
+		while (spil.spilvundet==false) {	// Loop while game hasn't been won.
+			spil.player1.setSuddenDeath(false); // Set SuddenDeath flag to false for both players otherwise it would be possible to win by rolling 2 sixes in the first turn and the 3rd turn.
 			spil.player2.setSuddenDeath(false);
-			spil.sequence();
+			spil.sequence(); //Game sequence..
 		}
-
-		GUI.close();
+		GUI.close(); // close GUI
+		spil.sc.close(); //Closing the scanner object.
 	}
-	
+
 	private void sequence() {
-		Scanner sc = new Scanner(System.in); // Scanner so you have to press enter to roll dice
 		
+
 		//instantialize, initialise and create the gameboard with only 1 field in the color green.
 		Field [] fields = new Field[1];
 
@@ -65,44 +70,42 @@ public class KimDiceGame {
 			//Slå Terning
 			System.out.println("");
 			System.out.print("Player 1........Press Enter to roll dice");
-			String enter = sc.nextLine();
+			sc.nextLine(); //Wait for userinput
 
-			terning1.Roll();
+			terning1.Roll(); // Roll both dice
 			terning2.Roll();
 
-			terning1værdi = terning1.getValue();
+			terning1værdi = terning1.getValue();  //Assign value of both dice to private variables
 			terning2værdi = terning2.getValue();
 
-			GUI.setDice(terning1værdi, terning2værdi);
+			GUI.setDice(terning1værdi, terning2værdi); //Throw the dice graphically. As we have created the gameboard earlier, the first throw is as fast as all the others.
 
-			//Check for 2 ensregler
-			if (terning1værdi == 1 && terning2værdi == 1) {
-				player1.setScore(0);
-				System.out.println("Player 1 your score is reset to 0");
+			//Check for 2 alike rules
+			if (terning1værdi == 1 && terning2værdi == 1) { // if two 1´s
+				player1.setScore(0); // reset score for player
+				System.out.println("Player 1 your score is reset to 0"); //infotext to player
 			}
-			if (player1.getScore() >= 40 && terning1værdi == terning2værdi){
-				spilvundet = true;
-				int samletscore = player1.getScore()+terning1værdi + terning2værdi;
-				System.out.println("Player 1, you've won the game by " + samletscore + " points");
-				return;
+			if (player1.getScore() >= 40 && terning1værdi == terning2værdi){ // if reached 40 or more points and rolled two alike
+				spilvundet = true; //Set gamewon
+				int samletscore = player1.getScore()+terning1værdi + terning2værdi;  //variable to get around concatenation problem of making a score of 49 and a roll of 1 and 2 display as 4912
+				System.out.println("Player 1, you've won the game by " + samletscore + " points");  // infotext to player
+				return;  // return from method.
 			}
-			if (terning1værdi == 6 && terning2værdi == 6) {
-				if (player1.getSuddenDeath()==true) {
-					spilvundet = true;
-					System.out.println("Player 1, you've won the game by SuddenDeath");
-					return;
+			if (terning1værdi == 6 && terning2værdi == 6) { //If two 6´s
+				if (player1.getSuddenDeath()==true) { //Check if Suddendeath flag is raised
+					spilvundet = true; // if so then set gamewon
+					System.out.println("Player 1, you've won the game by SuddenDeath"); // infotext to player
+					return; // return from method
 				}else{
-					player1.setSuddenDeath(true);
+					player1.setSuddenDeath(true); // otherwise raise SuddenDeath flag.
 				}
 			}
 
 			//Score tælles op
-			int samletscore = player1.getScore()+terning1værdi+terning2værdi;
-			player1.setScore(samletscore);
-			System.out.println("Player 1, your score is " + samletscore);
-
-		} while (terning1værdi == terning2værdi);
-
+			int samletscore = player1.getScore()+terning1værdi+terning2værdi; //variable to sum up score.
+			player1.setScore(samletscore); // set new score for player
+			System.out.println("Player 1, your score is " + samletscore); //infotext to player
+		} while (terning1værdi == terning2værdi); // as long as player throws 2 alike.
 
 
 		//Spiller2
@@ -111,41 +114,42 @@ public class KimDiceGame {
 			//Slå Terning
 			System.out.println("");
 			System.out.print("Player 2.......Press Enter to roll dice");
-			String enter = sc.nextLine();
-			
-			terning1.Roll();
+			sc.nextLine(); //Wait for userinput
+
+			terning1.Roll();// Roll both dice
 			terning2.Roll();
 
-			terning1værdi = terning1.getValue();
+			terning1værdi = terning1.getValue(); //Assign value of both dice to private variables
 			terning2værdi = terning2.getValue();
-			GUI.setDice(terning1værdi, terning2værdi);
+			GUI.setDice(terning1værdi, terning2værdi); //Throw the dice graphically. As we have created the gameboard earlier, the first throw is as fast as all the others.
 
-			//Check for 2 ensregler
-			if (terning1værdi == 1 && terning2værdi == 1) {
-				player2.setScore(0);
-				System.out.println("Player 2 your score is reset to 0");
+			//Check for 2 alike rules
+			if (terning1værdi == 1 && terning2værdi == 1) { // if two 1´s
+				player2.setScore(0); // reset score for player
+				System.out.println("Player 2 your score is reset to 0");  //infotext to player
 			}
-			if (player2.getScore() >= 40 && terning1værdi == terning2værdi){
-				this.spilvundet = true;
-				int samletscore = player2.getScore() + terning1værdi + terning2værdi;
-				System.out.print("Player 2, you've won the game with "+ samletscore + " points");
-				return;
+			if (player2.getScore() >= 40 && terning1værdi == terning2værdi){ // if reached 40 or more points and rolled two alike
+				this.spilvundet = true; //Set gamewon
+				int samletscore = player2.getScore() + terning1værdi + terning2værdi;  //variable to get around concatenation problem of making a score of 49 and a roll of 1 and 2 display as 4912
+				System.out.print("Player 2, you've won the game with "+ samletscore + " points");  // infotext to player
+				return;// return from method
+			}
 
-			}
-			if (terning1værdi == 6 && terning2værdi == 6) {
-				if (player2.getSuddenDeath()==true) {
-					this.spilvundet = true;
-					System.out.print("Player 2, you've won the game, by SuddenDeath ");
+			if (terning1værdi == 6 && terning2værdi == 6) { //If two 6´s
+				if (player2.getSuddenDeath()==true) { //Check if Suddendeath flag is raised
+					this.spilvundet = true; // if so then set gamewon
+					System.out.print("Player 2, you've won the game, by SuddenDeath ");  // infotext to player
 					return;
 				}else{
-					player2.setSuddenDeath(true);
+					player2.setSuddenDeath(true); // otherwise raise SuddenDeath flag.
 				}
 			}
 			//Score tælles op
-			int samletscore = player2.getScore()+terning1værdi+terning2værdi;
-			player2.setScore(samletscore);
-			System.out.println("Player 2, your score is "+ samletscore);
-		} while (terning1værdi == terning2værdi);
-		sc.close();
+			int samletscore = player2.getScore()+terning1værdi+terning2værdi; //variable to sum up score.
+			player2.setScore(samletscore);  // set new score for player
+			System.out.println("Player 2, your score is "+ samletscore); //infotext to player
+
+			
+		} while (terning1værdi == terning2værdi);// as long as player throws 2 alike.
 	}
 }
