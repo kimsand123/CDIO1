@@ -24,5 +24,5 @@ public class Dice {
 	
 	public String toString() {
 		return "value = "+ value;
-	}
+	} // Test1
 }
